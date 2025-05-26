@@ -1,0 +1,145 @@
+function draw() {
+
+	var collision = Matter.Collision.collides(paddleLeft, ground)
+	if (collision) {
+		if (playerLeftJumpCounter > 0) {
+			playerLeftJumpCounter--
+		}
+
+	}
+	collision = Matter.Collision.collides(paddleRight, ground)
+	if (collision) {
+		if (playerRightJumpCounter > 0) {
+			playerRightJumpCounter--
+		}
+
+	}
+	collision = Matter.Collision.collides(ball, ground2)
+	if (collision && !gameOver) {
+		rightScore++;
+		if (rightScore >= maxScore) {
+			gameOver = true;
+		} else {
+			serveFromLeft = false;
+			resetBall();
+		}
+	}
+	collision = Matter.Collision.collides(ball, ground)
+	if (collision && !gameOver) {
+		leftScore++;
+		if (leftScore >= maxScore) {
+			gameOver = true;
+		} else {
+			serveFromLeft = true;
+			resetBall();
+		}
+	}
+
+	if (leftSpinActive && millis() - leftSpinStart < spinDuration) {
+		Matter.Body.setAngularVelocity(paddleLeft, 0.5);
+	} else {
+		leftSpinActive = false;
+		Matter.Body.setAngularVelocity(paddleLeft, 0);
+	}
+
+	// Spin logic for right paddle
+	if (rightSpinActive && millis() - rightSpinStart < spinDuration) {
+		Matter.Body.setAngularVelocity(paddleRight, -0.5);
+	} else {
+		rightSpinActive = false;
+		Matter.Body.setAngularVelocity(paddleRight, 0);
+	}
+
+	let leftCollision = Matter.Collision.collides(paddleLeft, ground2) || Matter.Collision.collides(paddleLeft, ground)
+	if (leftCollision) {
+		playerLeftJumpCounter = 0
+	}
+
+	let rightCollision = Matter.Collision.collides(paddleRight, ground) || Matter.Collision.collides(paddleRight, ground2)
+	if (rightCollision) {
+		playerRightJumpCounter = 0
+	}
+
+	if (startScreen == true) {
+		textSize(60)
+		text(`player left controls, W,A,S,D, player right controls, arrow up, down, left, right`, windowWidth / 10, windowHeight / 2.5)
+		textSize(60)
+		text(`press space to start`, windowWidth / 2.5, windowHeight / 2)
+	}
+
+	textSize(50);
+	fill(0);
+	text(`Left: ${leftScore}`, 50, 100);
+	text(`Right: ${rightScore}`, windowWidth - 250, 100);
+
+	if (gameOver) {
+		textSize(100);
+		textAlign(CENTER, CENTER);
+		if (leftScore >= maxScore) {
+			text("Player Left Wins!", windowWidth / 2, windowHeight / 2);
+		} else {
+			text("Player Right Wins!", windowWidth / 2, windowHeight / 2);
+		}
+		return; // Stop drawing other logic
+	}
+	if (paddleLeft.position.x > windowWidth / 2 - 60) {
+		Matter.Body.setPosition(paddleLeft, {
+			x: windowWidth / 2 - 60,
+			y: paddleLeft.position.y
+		});
+	}
+
+	// Lock right paddle to right side
+	if (paddleRight.position.x < windowWidth / 2 + 60) {
+		Matter.Body.setPosition(paddleRight, {
+			x: windowWidth / 2 + 60,
+			y: paddleRight.position.y
+		});
+	}
+}
+
+function resetBall() {
+	// Reset ball velocity
+	Matter.Body.setVelocity(ball, {
+		x: 0,
+		y: 0
+	});
+	Matter.Body.setAngularVelocity(ball, 0);
+
+	// Reset paddle velocities and positions
+	Matter.Body.setVelocity(paddleLeft, {
+		x: 0,
+		y: 0
+	});
+	Matter.Body.setVelocity(paddleRight, {
+		x: 0,
+		y: 0
+	});
+
+	Matter.Body.setPosition(paddleLeft, { x: windowWidth / 4, y: windowHeight / 2 });
+Matter.Body.setPosition(paddleRight, { x: windowWidth / 1.3, y: windowHeight / 2 });
+
+	playerLeftJumpCounter = 0;
+	playerRightJumpCounter = 0;
+
+	// Position ball above server and launch
+	if (serveFromLeft) {
+		Matter.Body.setPosition(ball, {
+			x: paddleLeft.position.x,
+			y: paddleLeft.position.y - 150,
+		});
+		Matter.Body.applyForce(ball, ball.position, {
+			x: 0.05,
+			y: -0.05
+		});
+	} else {
+		Matter.Body.setPosition(ball, {
+			x: paddleRight.position.x,
+			y: paddleRight.position.y - 150,
+		});
+		Matter.Body.applyForce(ball, ball.position, {
+			x: -0.05,
+			y: -0.05
+		});
+	}
+}
