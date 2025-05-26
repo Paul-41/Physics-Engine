@@ -1,0 +1,26 @@
+let runner, engine, render;
+let paddleRightX = 2000
+let paddleLeftX = 250
+let paddleRightY = (1000)
+let paddleLeftY = (1000)
+let background
+let paddleRight
+let paddleLeft
+let bullets = []
+let playerLeftJumpCounter = 0
+let ground
+let playerRightJumpCounter = 0
+let ball
+let ground2
+let startScreen = true
+let leftScore = 0;
+let rightScore = 0;
+let maxScore = 11;
+let gameOver = false;
+let serveFromLeft = false;
+let lastGoalTime = 0;
+let leftSpinActive = false;
+let rightSpinActive = false;
+let spinDuration = 200; // milliseconds
+let leftSpinStart = 0;
+let rightSpinStart = 0;
