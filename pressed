@@ -1,0 +1,67 @@
+function keyPressed() {
+	if (keyCode === 32) {
+		startScreen = false
+		Runner.run(runner, engine);
+	}  
+
+
+
+	if (keyCode == UP_ARROW) {
+		if (playerRightJumpCounter == 0) {
+			playerRightJumpCounter++
+			let position = paddleRight.position
+			let direction = createVector(0, -0.9)
+			Matter.Body.applyForce(paddleRight, position, direction)
+		}
+	} else if (keyCode == LEFT_ARROW) {
+		let position = paddleRight.position
+		let direction = createVector(-0.9, 0)
+		Matter.Body.applyForce(paddleRight, position, direction)
+	} else if (keyCode == RIGHT_ARROW) {
+		let position = paddleRight.position
+		let direction = createVector(0.9, 0)
+		Matter.Body.applyForce(paddleRight, position, direction)
+	} if (keyCode === DOWN_ARROW) {
+  rightSpinActive = true;
+  rightSpinStart = millis();
+} {
+		if (key === 'w') { /// up
+			if (playerLeftJumpCounter == 0) {
+				playerLeftJumpCounter++
+				let position = paddleLeft.position
+				let direction = createVector(0, -0.90)
+				Matter.Body.applyForce(paddleleft, position, direction)
+			}
+		} else if (key === 'a') { // left
+			let position = paddleLeft.position;
+			let direction = createVector(-0.9, 0);
+			Matter.Body.applyForce(paddleLeft, position, direction)
+		} else if (key === 'd') { // right
+			let position = paddleLeft.position
+			let direction = createVector(0.9, 0)
+			Matter.Body.applyForce(paddleLeft, position, direction)
+		}
+
+		if (key === 's') {
+			leftSpinActive = true;
+			leftSpinStart = millis();
+		}
+	}
+
+	if (keyCode === 82 && gameOver) { // Press 'R' to restart
+		gameOver = false;
+		leftScore = 0;
+		rightScore = 0;
+		gameLose = false;
+		gameLose2 = false;
+		startScreen = true;
+		Matter.Body.setPosition(ball, {
+			x: windowWidth / 2,
+			y: windowHeight / 2
+		});
+		Matter.Body.setVelocity(ball, {
+			x: 0,
+			y: 0
+		});
+	}
+}
